@@ -85,3 +85,35 @@ string &idc::toLower(string &str) {
 		c += (c >= 'A' && c <= 'Z') ? offset : 0;
 	return str;
 }
+
+bool idc::replace(char *str, const std::string &from, const std::string &to, const bool loopReplace) {
+	if (str == nullptr)
+		return false;
+	string temp(str);
+	if (!idc::replace(temp, from, to, loopReplace))
+		return false;
+
+	temp.copy(str, temp.size(), 0);
+	str[temp.length()] = 0;
+	return true;
+}
+
+bool idc::replace(string &str, const std::string &from, const string &to, const bool loopReplace) {
+	if (str.length() == 0)
+		return false;
+
+	// to包含from
+	if (loopReplace && to.find(from) != string::npos)
+		return false;
+
+	// 替换
+	int curr = 0, last = 0;
+	while (curr < str.length()) {
+		curr = loopReplace ? str.find(from) : str.find(from, last);
+		if (curr == string::npos)
+			break;
+		str.replace(curr, from.length(), to);
+		last = curr + to.length();
+	}
+	return true;
+}

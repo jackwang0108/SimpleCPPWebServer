@@ -108,3 +108,86 @@ TEST(TestSuiteName, toLowerString) {
 	string dst = "abcdef";
 	EXPECT_EQ(idc::toLower(src), dst);
 }
+
+TEST(TestSuiteName, replaceString1) {
+	string str = "Name=jack, age=23, sex=male";
+	string from = "=";
+	string to = ":";
+	string expected = "Name:jack, age:23, sex:male";
+	EXPECT_TRUE(idc::replace(str, from, to));
+	EXPECT_EQ(str, expected);
+}
+
+
+TEST(TestSuiteName, replaceString2) {
+	string str = "Name:::jack, age:::23, sex:::male";
+	string from = "::";
+	string to = ":";
+	string expected = "Name:jack, age:23, sex:male";
+	EXPECT_TRUE(idc::replace(str, from, to, true));
+	EXPECT_EQ(str, expected);
+}
+
+
+TEST(TestSuiteName, replaceString3) {
+	string str = "Name:jack, age:23, sex:male";
+	string from = ":";
+	string to = "::";
+	EXPECT_FALSE(idc::replace(str, from, to, true));
+}
+
+
+TEST(TestSuiteName, replaceString4) {
+	string str = "Name:jack, age:23, sex:male";
+	string from = "=";
+	string to = ":";
+	string expected = "Name:jack, age:23, sex:male";
+	EXPECT_TRUE(idc::replace(str, from, to));
+	EXPECT_EQ(str, expected);
+}
+
+TEST(TestSuiteName, replaceString5) {
+	string str = "Name:jack, age:23, sex:male";
+	string from = ":";
+	string to = "==";
+	string expected = "Name==jack, age==23, sex==male";
+	EXPECT_TRUE(idc::replace(str, from, to));
+	EXPECT_EQ(str, expected);
+}
+
+TEST(TestSuiteName, replaceString7) {
+	string str = "Name: jack, age: 23, sex: male";
+	string from = ":";
+	string to = "";
+	string expected = "Name jack, age 23, sex male";
+	EXPECT_TRUE(idc::replace(str, from, to));
+	EXPECT_EQ(str, expected);
+}
+
+TEST(TestSuiteName, replaceCharString1) {
+	char str[] = "Name=jack, age=23, sex=male";
+	string from = "=";
+	string to = ":";
+	char expected[] = "Name:jack, age:23, sex:male";
+	EXPECT_TRUE(idc::replace(str, from, to));
+	EXPECT_STREQ(str, expected);
+}
+
+TEST(TestSuiteName, replaceCharString2) {
+	char str[] = "Name:::jack, age:::23, sex:::male";
+	string from = "::";
+	string to = ":";
+	char expected[] = "Name:jack, age:23, sex:male";
+	EXPECT_TRUE(idc::replace(str, from, to, true));
+	EXPECT_STREQ(str, expected);
+}
+
+TEST(TestSuiteName, replaceCharString3) {
+	char str[] = "Name:jack, age:23, sex:male";
+	string from = ":";
+	string to = "==";
+	char expected[] = "Name==jack, age==23, sex==male";
+	idc::replace(str, from, to, true);
+	// EXPECT_THROW(idc::replace(str, from, to, true), B);
+	EXPECT_STREQ(str, expected);
+}
