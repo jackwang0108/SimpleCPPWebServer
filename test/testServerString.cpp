@@ -191,3 +191,30 @@ TEST(TestSuiteName, replaceCharString3) {
 	// EXPECT_THROW(idc::replace(str, from, to, true), B);
 	EXPECT_STREQ(str, expected);
 }
+
+TEST(TestSuiteName, extractNumber1) {
+	string src = "abc123";
+	string dst;
+	string expected = "123";
+	EXPECT_EQ(idc::extractNumber(src, dst), expected);
+}
+
+TEST(TestSuiteName, extractNumber2) {
+	string src = "abc-123.12";
+	string dst;
+	string expected = "-123.12";
+	EXPECT_EQ(idc::extractNumber(src, dst, true, true), expected);
+}
+
+TEST(TestSuiteName, extractNumber3) {
+	string src = "abc-123.12";
+	char dst[20];
+	char expected[] = "-123.12";
+	EXPECT_STREQ(idc::extractNumber(src, dst, true, true), expected);
+}
+
+TEST(TestSuiteName, extractNumber4) {
+	string src = "abc-123.12";
+	string expected = "-123.12";
+	EXPECT_EQ(idc::extractNumber(src, true, true), expected);
+}

@@ -117,3 +117,35 @@ bool idc::replace(string &str, const std::string &from, const string &to, const 
 	}
 	return true;
 }
+
+
+char *idc::extractNumber(const std::string &src, char *dst, const bool extractSign, const bool extractDot) {
+	if (dst == nullptr)
+		return nullptr;
+
+	string temp = idc::extractNumber(src, extractSign, extractDot);
+	temp.copy(dst, temp.length(), 0);
+	dst[temp.length()] = 0;
+	return dst;
+}
+
+
+std::string &idc::extractNumber(const std::string &src, std::string &dst, const bool extractSign, const bool extractDot) {
+	string str;
+	for (char c: src) {
+		if (extractSign && (c == '-' || c == '+'))
+			str.append(1, c);
+		else if (extractDot && c == '.')
+			str.append(1, c);
+		else if (isdigit(c))
+			str.append(1, c);
+	}
+	dst = str;
+	return dst;
+}
+
+string idc::extractNumber(const string &src, const bool extractSign, const bool extractDot) {
+	string dst;
+	idc::extractNumber(src, dst, extractSign, extractDot);
+	return dst;
+}

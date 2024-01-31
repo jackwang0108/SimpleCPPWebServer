@@ -121,4 +121,41 @@ namespace idc {
      * @note 若loopReplace为true, 且字符串to包含字符串from, 则直接返回, 例如将"name:Jack"的":"替换为"::", 由于逻辑错误, 因此不会进行任何替换
 	 */
 	bool replace(std::string &str, const std::string &from, const std::string &to, const bool loopReplace = false);
+
+	/**
+	 * @brief 从字符串src中提取一个数字字符串并存放到dst中
+	 * @param src 要提取数字的字符串
+	 * @param dst 存放数字的字符串
+	 * @param extractSign 是否提取符号
+	 * @param extractDot 是否提取小数点
+	 * @return 存放数字的字符串
+     * 
+     * @note src和dst可以相同
+     * @note 该函数不会检查数字字符串的合法性, 只是单纯的提取数字字符
+	 */
+	char *extractNumber(const std::string &src, char *dst, const bool extractSign = false, const bool extractDot = false);
+
+	/**
+	 * @brief 从字符串src中提取一个数字字符串并存放到dst中
+	 * @param src 要提取数字的字符串
+	 * @param dst 存放数字的字符串
+	 * @param extractSign 是否提取符号
+	 * @param extractDot 是否提取小数点
+	 * @return 存放数字的字符串
+     * 
+     * @note src和dst可以相同
+     * @note 该函数不会检查数字字符串的合法性, 只是单纯的提取数字字符
+	 */
+	std::string &extractNumber(const std::string &src, std::string &dst, const bool extractSign = false, const bool extractDot = false);
+
+	/**
+	 * @brief 从字符串src中提取一个数字字符串
+	 * @param src 要提取数字的字符串
+	 * @param extractSign 是否提取符号
+	 * @param extractDot 是否提取小数点
+	 * @return 提取得到的数字字符串
+     * 
+     * @note 该函数不会检查数字字符串的合法性, 只是单纯的提取数字字符
+	 */
+	std::string extractNumber(const std::string &src, const bool extractSign = false, const bool extractDot = false);
 };// namespace idc
