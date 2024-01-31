@@ -67,4 +67,33 @@ namespace idc {
 	 */
 	std::string &trim(std::string &str, const char c = ' ');
 
+	/**
+	 * @brief 把字符串str中的小写字母转换为大写字母
+	 * @param str 要转换的字符串
+	 * @return 转换后的字符串
+	 */
+	char *toUpper(char *str);
+
+	/**
+	 * @brief 把字符串str中的小写字母转换为大写字母
+	 * @param str 要转换的字符串
+	 * @return 转换后的字符串
+	 */
+	std::string &toUpper(std::string &str);
+
+	/**
+	 * @brief 把字符串str中的大写字母转换为小写字母
+	 * @param str 要转换的字符串
+	 * @return 转换后的字符串
+	 */
+	char *toLower(char *str);
+
+	/**
+	 * @brief 把字符串str中的大写字母转换为小写字母
+	 * @param str 要转换的字符串
+	 * @return 转换后的字符串
+	 */
+	std::string &toLower(std::string &str);
+
+
 };// namespace idc
