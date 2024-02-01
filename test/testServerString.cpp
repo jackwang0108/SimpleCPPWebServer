@@ -252,3 +252,13 @@ TEST(TestSuiteName, StrSplit4) {
 	string output = ::testing::internal::GetCapturedStdout();
 	EXPECT_EQ(output, "{ a, b, c, d, e, f }\n");
 }
+
+TEST(TestSuiteName, StrSplit5) {
+	idc::StrSpliter test("21, -12, 3.14, hello", ",", true);
+	EXPECT_EQ(test.getValue<int>(0), 21);
+	EXPECT_EQ(test.getValue<int>(1), -12);
+	EXPECT_FLOAT_EQ(test.getValue<float>(2), 3.14);
+	char buf[1024];
+	EXPECT_STREQ(test.getValue(3, buf), "hello");
+	EXPECT_EQ(test.getValue<string>(3), "hello");
+}

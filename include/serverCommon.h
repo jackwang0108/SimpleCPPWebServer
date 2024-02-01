@@ -9,6 +9,7 @@
 #include <functional>
 #include <iostream>
 #include <locale>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -203,12 +204,43 @@ namespace idc {
 		 */
 		StrSpliter(const std::string &str, const std::string &delim, const bool trim = false);
 
+		/**
+		 * @brief 初始化以字符串str中的内容被字符串delim分割后的词组为内容的StrSpliter
+		 * @param str 被分割的字符串
+		 * @param delim 分隔符
+		 * @param trim 是否去掉空白
+		 * @return StrSpliter对象
+		 */
+		static StrSpliter split(const std::string &str, const std::string &delim, const bool trim = false);
+
 
 		const std::string &operator[](int idx) const { return words[idx]; }
 
+		/**
+		 * @brief 返回分割后的单词数
+		 * @return 返回分割后的单词数
+		 */
 		size_t size() const { return words.size(); }
 
-		static StrSpliter split(const std::string &str, const std::string &delim, const bool trim = false);
+		template<typename T>
+		T &getValue(int idx, T &out) const {
+			std::istringstream iss(words[idx]);
+			iss >> out;
+			return out;
+		}
+
+		template<typename T>
+		T getValue(int idx) const {
+			T temp;
+			getValue(idx, temp);
+			return temp;
+		}
+
+		char *getValue(int idx, char *out, size_t size = -1) const {
+			size = size == -1 ? words[idx].length() : size;
+			strncpy(out, words[idx].c_str(), size);
+			return out;
+		}
 	};
 
 	std::ostream &operator<<(std::ostream &os, const idc::StrSpliter &ss);
