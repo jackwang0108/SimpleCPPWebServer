@@ -1,5 +1,8 @@
+#include <regex>
+
 #include "serverCommon.h"
 
+using std::cout;
 using std::string;
 
 char *idc::ltrim(char *str, const char c) {
@@ -42,10 +45,18 @@ string &idc::rtrim(string &str, const char c) {
 	return str;
 }
 
+
 string &idc::trim(string &str, const char c) {
 	idc::ltrim(str, c);
 	idc::rtrim(str, c);
 	return str;
+}
+
+string idc::trim(const string &str, const char c) {
+	string copy = str;
+	idc::ltrim(copy, c);
+	idc::rtrim(copy, c);
+	return copy;
 }
 
 char *idc::toUpper(char *str) {
@@ -148,4 +159,46 @@ string idc::extractNumber(const string &src, const bool extractSign, const bool 
 	string dst;
 	idc::extractNumber(src, dst, extractSign, extractDot);
 	return dst;
+}
+
+
+bool idc::matchStr(const string &str, const string &pattern) {
+	std::smatch matches;
+	std::regex pat(pattern, std::regex::icase);
+	return std::regex_search(str, matches, pat);
+}
+
+idc::StrSpliter::StrSpliter(idc::StrSpliter &&other) {
+	words = std::move(other.words);
+	other.words.clear();
+}
+
+idc::StrSpliter::StrSpliter(const string &str, const string &delim, const bool trim) : words(0, "") {
+	string token;
+	size_t currStart = 0, currEnd = 0, delimLen = delim.length();
+
+	while ((currEnd = str.find(delim, currStart)) != string::npos) {
+		token = str.substr(currStart, currEnd - currStart);
+		currStart = currEnd + delimLen;
+		if (trim)
+			words.push_back(idc::trim(token));
+		else
+			words.push_back(token);
+	}
+	if (trim)
+		words.push_back(idc::trim(str.substr(currStart)));
+	else
+		words.push_back(str.substr(currStart));
+}
+
+idc::StrSpliter idc::StrSpliter::split(const string &str, const string &delim, const bool trim) {
+	return std::move(idc::StrSpliter(str, delim, trim));
+}
+
+std::ostream &idc::operator<<(std::ostream &os, const idc::StrSpliter &ss) {
+	os << "{ ";
+	for (int i = 0; i < ss.size(); i++)
+		os << ss[i] << (i == ss.size() - 1 ? " " : ", ");
+	os << "}";
+	return os;
 }

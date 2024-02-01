@@ -10,6 +10,7 @@
 #include <iostream>
 #include <locale>
 #include <string>
+#include <vector>
 
 #include <sys/ipc.h>
 #include <sys/sem.h>
@@ -66,6 +67,14 @@ namespace idc {
 	 * @return 删除后的字符串
 	 */
 	std::string &trim(std::string &str, const char c = ' ');
+
+	/**
+	 * @brief 删除字符串str左右两侧的字符c
+	 * @param str 要删除的字符串
+	 * @param c 要删除的字符
+	 * @return 删除后的字符串
+	 */
+	std::string trim(const std::string &str, const char c = ' ');
 
 	/**
 	 * @brief 把字符串str中的小写字母转换为大写字母
@@ -158,4 +167,49 @@ namespace idc {
      * @note 该函数不会检查数字字符串的合法性, 只是单纯的提取数字字符
 	 */
 	std::string extractNumber(const std::string &src, const bool extractSign = false, const bool extractDot = false);
+
+	/**
+	 * @brief 检查字符串str是否匹配模式pattern
+	 * @param str 待检查的字符串
+	 * @param pattern 需要匹配的模式
+	 * @return true则匹配成功, false则匹配失败
+     * 
+     * @note 匹配时忽略大小写
+	 */
+	bool matchStr(const std::string &str, const std::string &pattern);
+
+	class StrSpliter {
+	private:
+		std::vector<std::string> words;
+
+		// 禁止拷贝构造函数
+		StrSpliter(const StrSpliter &other) = delete;
+		// 禁止赋值函数
+		StrSpliter &operator=(const StrSpliter &) = delete;
+
+	public:
+		/**
+		 * @brief 初始化空的StrSpliter对象
+		 */
+		StrSpliter() : words(0, "") {}
+
+		StrSpliter(StrSpliter &&other);
+
+		/**
+		 * @brief 初始化以字符串str中的内容被字符串delim分割后的词组为内容的StrSpliter
+		 * @param str 被分割的字符串
+		 * @param delim 分隔符
+		 * @param trim 是否去掉空白
+		 */
+		StrSpliter(const std::string &str, const std::string &delim, const bool trim = false);
+
+
+		const std::string &operator[](int idx) const { return words[idx]; }
+
+		size_t size() const { return words.size(); }
+
+		static StrSpliter split(const std::string &str, const std::string &delim, const bool trim = false);
+	};
+
+	std::ostream &operator<<(std::ostream &os, const idc::StrSpliter &ss);
 };// namespace idc

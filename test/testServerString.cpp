@@ -4,6 +4,7 @@
 #define TestSuiteName serverStringTest
 
 using std::string;
+using std::vector;
 
 int main(int argc, char *argv[]) {
 	::testing::InitGoogleTest(&argc, argv);
@@ -217,4 +218,37 @@ TEST(TestSuiteName, extractNumber4) {
 	string src = "abc-123.12";
 	string expected = "-123.12";
 	EXPECT_EQ(idc::extractNumber(src, true, true), expected);
+}
+
+TEST(TestSuiteName, matchStr1) {
+	EXPECT_TRUE(idc::matchStr("test.cpp", ".*\\.(h|cpp)"));
+}
+
+TEST(TestSuiteName, StrSpliter1) {
+	idc::StrSpliter test("a,b,c,d,e,f", ",");
+	vector<string> re{"a", "b", "c", "d", "e", "f"};
+	for (int i = 0; i < re.size(); i++)
+		EXPECT_EQ(re[i], test[i]);
+}
+
+TEST(TestSuiteName, StrSpliter2) {
+	idc::StrSpliter test("a, b ,   c ,  d ,  e,  f", ",", true);
+	vector<string> re{"a", "b", "c", "d", "e", "f"};
+	for (int i = 0; i < re.size(); i++)
+		EXPECT_EQ(re[i], test[i]);
+}
+
+TEST(TestSuiteName, StrSplit3) {
+	idc::StrSpliter test = idc::StrSpliter::split("a+a+a+a+a", "+");
+	vector<string> re{"a", "a", "a", "a", "a"};
+	for (int i = 0; i < re.size(); i++)
+		EXPECT_EQ(re[i], test[i]);
+}
+
+TEST(TestSuiteName, StrSplit4) {
+	idc::StrSpliter test("a b c d e f", " ");
+	::testing::internal::CaptureStdout();
+	std::cout << test << "\n";
+	string output = ::testing::internal::GetCapturedStdout();
+	EXPECT_EQ(output, "{ a, b, c, d, e, f }\n");
 }
