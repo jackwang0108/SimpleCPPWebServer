@@ -239,7 +239,7 @@ TEST(TestSuiteName, StrSpliter2) {
 }
 
 TEST(TestSuiteName, StrSplit3) {
-	idc::StrSpliter test = idc::StrSpliter::split("a+a+a+a+a", "+");
+	idc::StrSpliter test = idc::StrSpliter("a-+-a-+-a-+-a-+-a", "-+-");
 	vector<string> re{"a", "a", "a", "a", "a"};
 	for (int i = 0; i < re.size(); i++)
 		EXPECT_EQ(re[i], test[i]);
@@ -250,15 +250,96 @@ TEST(TestSuiteName, StrSplit4) {
 	::testing::internal::CaptureStdout();
 	std::cout << test << "\n";
 	string output = ::testing::internal::GetCapturedStdout();
-	EXPECT_EQ(output, "{ a, b, c, d, e, f }\n");
+	EXPECT_EQ(output, "{a, b, c, d, e, f}\n");
 }
 
 TEST(TestSuiteName, StrSplit5) {
-	idc::StrSpliter test("21, -12, 3.14, hello", ",", true);
+	idc::StrSpliter test("21, -12, 3.14, hello, a30, xx3.14", ",", true);
 	EXPECT_EQ(test.getValue<int>(0), 21);
 	EXPECT_EQ(test.getValue<int>(1), -12);
 	EXPECT_FLOAT_EQ(test.getValue<float>(2), 3.14);
 	char buf[1024];
 	EXPECT_STREQ(test.getValue(3, buf), "hello");
 	EXPECT_EQ(test.getValue<string>(3), "hello");
+	EXPECT_EQ(test.getValue<int>(4), 30);
+	EXPECT_FLOAT_EQ(test.getValue<float>(5), 3.14);
+}
+
+struct SoccerPlayer {
+	int no;
+	int age;
+	int salary;
+	string name;
+	float weight;
+	bool striker;
+	string club;
+};
+
+SoccerPlayer messi{
+    .no = 10,
+    .age = 30,
+    .salary = 21000,
+    .name = "messi",
+    .weight = 68.5,
+    .striker = true,
+    .club = "Barcelona",
+};
+
+std::ostream &operator<<(std::ostream &os, SoccerPlayer &sp) {
+	os << sp.no << ", ";
+	os << sp.age << ", ";
+	os << sp.salary << ", ";
+	os << sp.name << ", ";
+	os << sp.weight << ", ";
+	os << sp.striker << ", ";
+	os << sp.club << "\n";
+	return os;
+}
+
+TEST(TestSuiteName, StrSplit6) {
+	std::stringstream ssMessi;
+	ssMessi << messi;
+	idc::StrSpliter words(ssMessi.str(), ",", true);
+
+	SoccerPlayer who;
+	words.getValue(0, who.no);
+	words.getValue(1, who.age);
+	words.getValue(2, who.salary);
+	words.getValue(3, who.name);
+	words.getValue(4, who.weight);
+	words.getValue(5, who.striker);
+	words.getValue(6, who.club);
+
+	std::stringstream ssWho;
+	ssWho << who;
+	EXPECT_EQ(ssMessi.str(), ssWho.str());
+}
+
+TEST(TestSuiteName, StrSplit7) {
+	idc::StrSpliter ss("test, a", ",", true);
+	ss.resplit("test, b", ",", true);
+	::testing::internal::CaptureStdout();
+	std::cout << ss << "\n";
+	string output = ::testing::internal::GetCapturedStdout();
+	EXPECT_EQ(output, "{test, b}\n");
+}
+
+TEST(TestSuiteName, getXmlFieldValue) {
+	string xml = "<name>messi</name><no>10</no><age>30</age><salary>21000</salary><weight>68.5</weight><striker>1</striker><club>Barcelona</club>";
+	SoccerPlayer who;
+	idc::getXmlFieldValue(xml, "name", who.name);
+	idc::getXmlFieldValue(xml, "no", who.no);
+	idc::getXmlFieldValue(xml, "age", who.age);
+	idc::getXmlFieldValue(xml, "salary", who.salary);
+	idc::getXmlFieldValue(xml, "weight", who.weight);
+	idc::getXmlFieldValue(xml, "striker", who.striker);
+	idc::getXmlFieldValue(xml, "club", who.club);
+
+	std::stringstream ssMessi;
+	ssMessi << messi;
+	idc::StrSpliter words(ssMessi.str(), ",", true);
+
+	std::stringstream ssWho;
+	ssWho << who;
+	EXPECT_EQ(ssMessi.str(), ssWho.str());
 }

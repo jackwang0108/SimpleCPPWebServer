@@ -202,7 +202,15 @@ namespace idc {
 		 * @param delim 分隔符
 		 * @param trim 是否去掉空白
 		 */
-		StrSpliter(const std::string &str, const std::string &delim, const bool trim = false);
+		StrSpliter(const std::string &str, const std::string &delim = ",", const bool trim = true);
+
+		/**
+		 * @brief 将已经初始化的StrSpliter对象重新初始化为字符串str被字符串delim分割后的词组为内容的StrSpliter
+		 * @param str 被分割的字符串
+		 * @param delim 分隔符
+		 * @param trim 是否去掉空白
+		 */
+		void resplit(const std::string &str, const std::string &delim = ",", const bool trim = false, const bool clear = true);
 
 		/**
 		 * @brief 初始化以字符串str中的内容被字符串delim分割后的词组为内容的StrSpliter
@@ -222,13 +230,31 @@ namespace idc {
 		 */
 		size_t size() const { return words.size(); }
 
+
+		/**
+		 * @brief 将第idx个字段的值转化为对应类型后保存到变量out中
+		 * @tparam T 变量的类型
+		 * @param idx 要获得值的字段的idx
+		 * @param out 保存值的变量
+		 * @return out的引用
+		 */
 		template<typename T>
 		T &getValue(int idx, T &out) const {
-			std::istringstream iss(words[idx]);
+			std::istringstream iss;
+			if constexpr (std::is_arithmetic_v<T>)
+				iss.str(idc::extractNumber(words[idx], true, true));
+			else
+				iss.str(words[idx]);
 			iss >> out;
 			return out;
 		}
 
+		/**
+		 * @brief 获得第idx个字段的值
+		 * @tparam T idx字段的类型 
+		 * @param idx 要获得值的字段的idx
+		 * @return 字段的值
+		 */
 		template<typename T>
 		T getValue(int idx) const {
 			T temp;
@@ -236,6 +262,15 @@ namespace idc {
 			return temp;
 		}
 
+		/**
+		 * @brief 将第idx个字段保存到字符串out中
+		 * @param idx 字段的idx
+		 * @param out 存储字段的字符串
+		 * @param size 保存的长度, -1表示字段的长度
+		 * @return out
+         * 
+         * @note size=-1时需要用户保证out大于字段的长度
+		 */
 		char *getValue(int idx, char *out, size_t size = -1) const {
 			size = size == -1 ? words[idx].length() : size;
 			strncpy(out, words[idx].c_str(), size);
@@ -244,4 +279,44 @@ namespace idc {
 	};
 
 	std::ostream &operator<<(std::ostream &os, const idc::StrSpliter &ss);
+
+	/**
+	 * @brief 获得字符串形式的xml文件中名为fieldName的标签的值, 并将其存储于变量out中
+	 * @tparam T 变量out的类型
+	 * @param xmlBuf 字符串形式的xml文件
+	 * @param fieldName 要提取的标签名
+	 * @param out 存储标签值的变量
+	 * @return 是否成功
+	 */
+	template<typename T>
+	bool getXmlFieldValue(const std::string &xmlBuf, const std::string fieldName, T &out) {
+		std::string startTag = "<" + fieldName + ">";
+		std::string endTag = "</" + fieldName + ">";
+
+		int startPos = xmlBuf.find(startTag);
+		if (startPos == std::string::npos)
+			return false;
+
+		int endPos = xmlBuf.find(endTag);
+		if (endPos == std::string::npos)
+			return false;
+
+		std::string field = xmlBuf.substr(startPos + startTag.length(), endPos - startPos - startTag.length());
+
+		std::istringstream iss;
+		if constexpr (std::is_arithmetic_v<T>)
+			iss.str(idc::extractNumber(field, true, true));
+		else
+			iss.str(field);
+		iss >> out;
+
+		return true;
+	}
+
+	template<typename T>
+	std::pair<bool, T> getXmlFieldValue(const std::string &xmlBuf, const std::string fieldName) {
+		T temp = T();
+		bool result = getXmlFieldValue(xmlBuf, fieldName, temp);
+		return {result, temp};
+	}
 };// namespace idc

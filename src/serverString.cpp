@@ -191,14 +191,34 @@ idc::StrSpliter::StrSpliter(const string &str, const string &delim, const bool t
 		words.push_back(str.substr(currStart));
 }
 
+void idc::StrSpliter::resplit(const std::string &str, const std::string &delim, const bool trim, const bool clear) {
+	if (clear)
+		words.clear();
+	string token;
+	size_t currStart = 0, currEnd = 0, delimLen = delim.length();
+
+	while ((currEnd = str.find(delim, currStart)) != string::npos) {
+		token = str.substr(currStart, currEnd - currStart);
+		currStart = currEnd + delimLen;
+		if (trim)
+			words.push_back(idc::trim(token));
+		else
+			words.push_back(token);
+	}
+	if (trim)
+		words.push_back(idc::trim(str.substr(currStart)));
+	else
+		words.push_back(str.substr(currStart));
+}
+
 idc::StrSpliter idc::StrSpliter::split(const string &str, const string &delim, const bool trim) {
 	return std::move(idc::StrSpliter(str, delim, trim));
 }
 
 std::ostream &idc::operator<<(std::ostream &os, const idc::StrSpliter &ss) {
-	os << "{ ";
+	os << "{";
 	for (int i = 0; i < ss.size(); i++)
-		os << ss[i] << (i == ss.size() - 1 ? " " : ", ");
+		os << ss[i] << (i == ss.size() - 1 ? "" : ", ");
 	os << "}";
 	return os;
 }
