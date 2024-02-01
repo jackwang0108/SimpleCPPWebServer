@@ -7,6 +7,19 @@ project(
     LANGUAGES CXX
 )
 
+include(FetchContent)
+
+# 设置FetchContent所下载内容的输出目录
+set(FETCHCONTENT_BASE_DIR ${CMAKE_BINARY_DIR}/_deps)
+
+# 下载并添加fmt库
+FetchContent_Declare(
+    fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+    GIT_TAG 10.2.1
+)
+FetchContent_MakeAvailable(fmt)
+
 add_library(
     SimpleServer
     "./src/serverString.cpp"
@@ -16,6 +29,8 @@ target_include_directories(
     SimpleServer
     PRIVATE include
 )
+
+target_link_libraries(SimpleServer PRIVATE fmt)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -28,7 +43,6 @@ message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
 
 if(ENABLE_UNIT_TESTS)
     # 下载GTest
-    include(FetchContent)
     FetchContent_Declare(
         googletest
         GIT_REPOSITORY https://github.com/google/googletest.git
