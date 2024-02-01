@@ -22,7 +22,8 @@ FetchContent_MakeAvailable(fmt)
 
 add_library(
     SimpleServer
-    "./src/serverString.cpp"
+    ./src/serverString.cpp
+    ./src/serverTime.cpp
 )
 
 target_include_directories(
@@ -80,21 +81,16 @@ if(ENABLE_UNIT_TESTS)
 
     # 测试目标
     add_executable(testServerString test/testServerString.cpp)
+    add_executable(testServerTime test/testServerTime.cpp)
 
-    target_include_directories(
-        testServerString
-        PRIVATE include
-    )
+    target_include_directories(testServerString PRIVATE include)
+    target_include_directories(testServerTime PRIVATE include)
 
-    target_link_libraries(
-        testServerString
-        PRIVATE gtest_main SimpleServer
-    )
+    target_link_libraries(testServerString PRIVATE gtest_main SimpleServer)
+    target_link_libraries(testServerTime PRIVATE gtest_main SimpleServer)
 
     enable_testing()
 
-    add_test(
-        NAME ServerString
-        COMMAND $<TARGET_FILE:testServerString>
-    )
+    add_test(NAME ServerString COMMAND $<TARGET_FILE:testServerString>)
+    add_test(NAME ServerTime COMMAND $<TARGET_FILE:testServerTime>)
 endif()
