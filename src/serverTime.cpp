@@ -1,11 +1,11 @@
-#include "serverCommon.h"
+#include "serverTime.h"
 
 using std::string;
 using std::time_t;
 
 
 string &idc::timeToStr(const time_t time, string &out, const string &fmt) {
-	tm timeTm;
+	tm timeTm{};
 	localtime_r(&time, &timeTm);
 	std::stringstream ss;
 	ss << std::put_time(&timeTm, fmt.c_str());
@@ -49,7 +49,7 @@ string idc::getCurrTime(const int timeInterval, const string &fmt) {
 	return idc::timeToStr(now, fmt);
 }
 
-char *idc::getCurrTime(char *out, const int timeInterval, const string &fmt) {
+[[maybe_unused]] char *idc::getCurrTime(char *out, const int timeInterval, const string &fmt) {
 	time_t now = std::time(nullptr) + timeInterval;
 	idc::timeToStr(now, out, fmt);
 	return out;

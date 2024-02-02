@@ -1,4 +1,4 @@
-#include "serverCommon.h"
+#include "serverTime.h"
 #include "gtest/gtest.h"
 
 #define TestSuiteName serverTimeTest

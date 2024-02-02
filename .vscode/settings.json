@@ -7,6 +7,8 @@
         "chrono": "cpp",
         "iostream": "cpp",
         "iomanip": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "sstream": "cpp",
+        "functional": "cpp"
     }
 }

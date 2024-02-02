@@ -1,6 +1,6 @@
 #include <regex>
 
-#include "serverCommon.h"
+#include "serverString.h"
 
 using std::cout;
 using std::string;
@@ -110,7 +110,7 @@ bool idc::replace(char *str, const std::string &from, const std::string &to, con
 }
 
 bool idc::replace(string &str, const std::string &from, const string &to, const bool loopReplace) {
-	if (str.length() == 0)
+	if (str.empty())
 		return false;
 
 	// to包含from
@@ -118,7 +118,7 @@ bool idc::replace(string &str, const std::string &from, const string &to, const 
 		return false;
 
 	// 替换
-	int curr = 0, last = 0;
+	size_t curr = 0, last = 0;
 	while (curr < str.length()) {
 		curr = loopReplace ? str.find(from) : str.find(from, last);
 		if (curr == string::npos)
@@ -168,14 +168,14 @@ bool idc::matchStr(const string &str, const string &pattern) {
 	return std::regex_search(str, matches, pat);
 }
 
-idc::StrSpliter::StrSpliter(idc::StrSpliter &&other) {
+idc::StrSplitter::StrSplitter(idc::StrSplitter &&other) noexcept {
 	words = std::move(other.words);
 	other.words.clear();
 }
 
-idc::StrSpliter::StrSpliter(const string &str, const string &delim, const bool trim) : words(0, "") {
+idc::StrSplitter::StrSplitter(const string &str, const string &delim, const bool trim) : words(0, "") {
 	string token;
-	size_t currStart = 0, currEnd = 0, delimLen = delim.length();
+	size_t currStart = 0, currEnd, delimLen = delim.length();
 
 	while ((currEnd = str.find(delim, currStart)) != string::npos) {
 		token = str.substr(currStart, currEnd - currStart);
@@ -191,11 +191,11 @@ idc::StrSpliter::StrSpliter(const string &str, const string &delim, const bool t
 		words.push_back(str.substr(currStart));
 }
 
-void idc::StrSpliter::resplit(const std::string &str, const std::string &delim, const bool trim, const bool clear) {
+void idc::StrSplitter::resplit(const std::string &str, const std::string &delim, const bool trim, const bool clear) {
 	if (clear)
 		words.clear();
 	string token;
-	size_t currStart = 0, currEnd = 0, delimLen = delim.length();
+	size_t currStart = 0, currEnd, delimLen = delim.length();
 
 	while ((currEnd = str.find(delim, currStart)) != string::npos) {
 		token = str.substr(currStart, currEnd - currStart);
@@ -211,11 +211,11 @@ void idc::StrSpliter::resplit(const std::string &str, const std::string &delim, 
 		words.push_back(str.substr(currStart));
 }
 
-idc::StrSpliter idc::StrSpliter::split(const string &str, const string &delim, const bool trim) {
-	return std::move(idc::StrSpliter(str, delim, trim));
+[[maybe_unused]] idc::StrSplitter idc::StrSplitter::split(const string &str, const string &delim, const bool trim) {
+	return std::move(idc::StrSplitter(str, delim, trim));
 }
 
-std::ostream &idc::operator<<(std::ostream &os, const idc::StrSpliter &ss) {
+std::ostream &idc::operator<<(std::ostream &os, const idc::StrSplitter &ss) {
 	os << "{";
 	for (int i = 0; i < ss.size(); i++)
 		os << ss[i] << (i == ss.size() - 1 ? "" : ", ");

@@ -1,4 +1,4 @@
-#include "serverCommon.h"
+#include "serverString.h"
 #include "gtest/gtest.h"
 
 #define TestSuiteName serverStringTest
@@ -225,28 +225,28 @@ TEST(TestSuiteName, matchStr1) {
 }
 
 TEST(TestSuiteName, StrSpliter1) {
-	idc::StrSpliter test("a,b,c,d,e,f", ",");
+	idc::StrSplitter test("a,b,c,d,e,f", ",");
 	vector<string> re{"a", "b", "c", "d", "e", "f"};
 	for (int i = 0; i < re.size(); i++)
 		EXPECT_EQ(re[i], test[i]);
 }
 
 TEST(TestSuiteName, StrSpliter2) {
-	idc::StrSpliter test("a, b ,   c ,  d ,  e,  f", ",", true);
+	idc::StrSplitter test("a, b ,   c ,  d ,  e,  f", ",", true);
 	vector<string> re{"a", "b", "c", "d", "e", "f"};
 	for (int i = 0; i < re.size(); i++)
 		EXPECT_EQ(re[i], test[i]);
 }
 
 TEST(TestSuiteName, StrSplit3) {
-	idc::StrSpliter test = idc::StrSpliter("a-+-a-+-a-+-a-+-a", "-+-");
+	idc::StrSplitter test = idc::StrSplitter("a-+-a-+-a-+-a-+-a", "-+-");
 	vector<string> re{"a", "a", "a", "a", "a"};
 	for (int i = 0; i < re.size(); i++)
 		EXPECT_EQ(re[i], test[i]);
 }
 
 TEST(TestSuiteName, StrSplit4) {
-	idc::StrSpliter test("a b c d e f", " ");
+	idc::StrSplitter test("a b c d e f", " ");
 	::testing::internal::CaptureStdout();
 	std::cout << test << "\n";
 	string output = ::testing::internal::GetCapturedStdout();
@@ -254,7 +254,7 @@ TEST(TestSuiteName, StrSplit4) {
 }
 
 TEST(TestSuiteName, StrSplit5) {
-	idc::StrSpliter test("21, -12, 3.14, hello, a30, xx3.14", ",", true);
+	idc::StrSplitter test("21, -12, 3.14, hello, a30, xx3.14", ",", true);
 	EXPECT_EQ(test.getValue<int>(0), 21);
 	EXPECT_EQ(test.getValue<int>(1), -12);
 	EXPECT_FLOAT_EQ(test.getValue<float>(2), 3.14);
@@ -299,7 +299,7 @@ std::ostream &operator<<(std::ostream &os, SoccerPlayer &sp) {
 TEST(TestSuiteName, StrSplit6) {
 	std::stringstream ssMessi;
 	ssMessi << messi;
-	idc::StrSpliter words(ssMessi.str(), ",", true);
+	idc::StrSplitter words(ssMessi.str(), ",", true);
 
 	SoccerPlayer who;
 	words.getValue(0, who.no);
@@ -316,7 +316,7 @@ TEST(TestSuiteName, StrSplit6) {
 }
 
 TEST(TestSuiteName, StrSplit7) {
-	idc::StrSpliter ss("test, a", ",", true);
+	idc::StrSplitter ss("test, a", ",", true);
 	ss.resplit("test, b", ",", true);
 	::testing::internal::CaptureStdout();
 	std::cout << ss << "\n";
@@ -337,7 +337,7 @@ TEST(TestSuiteName, getXmlFieldValue) {
 
 	std::stringstream ssMessi;
 	ssMessi << messi;
-	idc::StrSpliter words(ssMessi.str(), ",", true);
+	idc::StrSplitter words(ssMessi.str(), ",", true);
 
 	std::stringstream ssWho;
 	ssWho << who;
