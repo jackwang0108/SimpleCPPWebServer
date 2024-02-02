@@ -6,6 +6,7 @@
 #include <cstring>
 
 #include <algorithm>
+#include <chrono>
 #include <functional>
 #include <iostream>
 #include <locale>
@@ -18,6 +19,9 @@
 #include <sys/shm.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include "fmt/core.h"
+#include "fmt/format.h"
 
 namespace idc {
 
@@ -313,10 +317,18 @@ namespace idc {
 		return true;
 	}
 
+	/**
+	 * @brief 获得字符串形式的xml文件中名为fieldName的标签的值并返回
+	 * @tparam T 变量out的类型
+	 * @param xmlBuf 字符串形式的xml文件
+	 * @param fieldName 要提取的标签名
+	 * @return first为是否成功, second为获取得到的值
+	 */
 	template<typename T>
 	std::pair<bool, T> getXmlFieldValue(const std::string &xmlBuf, const std::string fieldName) {
 		T temp = T();
 		bool result = getXmlFieldValue(xmlBuf, fieldName, temp);
 		return {result, temp};
 	}
+
 };// namespace idc

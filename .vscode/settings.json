@@ -1,3 +1,10 @@
 {
-    "cmake.cmakePath": "cmake"
+    "cmake.cmakePath": "cmake",
+    "files.associations": {
+        "*.make": "makefile",
+        "Makefile2": "makefile",
+        "string": "cpp",
+        "chrono": "cpp",
+        "iostream": "cpp"
+    }
 }
