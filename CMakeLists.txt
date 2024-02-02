@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 project(
     SimpleC++WebServer
@@ -7,12 +7,18 @@ project(
     LANGUAGES CXX
 )
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 include(FetchContent)
 
 # 设置FetchContent所下载内容的输出目录
 set(FETCHCONTENT_BASE_DIR ${CMAKE_BINARY_DIR}/_deps)
 
 # 下载并添加fmt库
+message("Fetching: fmt")
 FetchContent_Declare(
     fmt
     GIT_REPOSITORY https://github.com/fmtlib/fmt.git
@@ -31,12 +37,7 @@ target_include_directories(
     PRIVATE include
 )
 
-target_link_libraries(SimpleServer PRIVATE fmt)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+target_link_libraries(SimpleServer PUBLIC fmt::fmt)
 
 # 单元测试, 默认为ON, 如果没有网络则设置为OFF避免从Github下载GTest
 option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
@@ -44,6 +45,7 @@ message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
 
 if(ENABLE_UNIT_TESTS)
     # 下载GTest
+    message("Fetching: googletest")
     FetchContent_Declare(
         googletest
         GIT_REPOSITORY https://github.com/google/googletest.git
